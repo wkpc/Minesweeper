@@ -62,6 +62,8 @@ public class Game
             }
         }
 
+        printGrid();
+
         //once all the mines have been added, must go back through the real grid and update all the clear spots to
         //reflect the number of mines adjacent
         //loop through all the rows
@@ -74,11 +76,29 @@ public class Game
                 if (gridReal[x][y] != -1)
                 {
                     //check in a circle around it, clockwise from top left
-                    for (int i = 0; i < 8; i++)
-                    {
+                    int checkX = x - 1;
+                    int checkY = y - 1;
+                    int mineCount = 0;
 
+                    //check row by row
+                    for (int cY = checkY; cY < checkY + 3; cY++)
+                    {
+                        for (int cX = checkX; cX < checkX + 3; cX++)
+                        {
+                            //if that spot exists (i.e. not out of bounds)
+                            if (cX >= 0 && cX < chosenDim && cY >= 0 && cY < chosenDim)
+                            {
+                                //check if there's a mine and add it to the count
+                                if (gridReal[cX][cY] == -1)
+                                {
+                                    mineCount++;
+                                }
+                            }
+                        }
                     }
 
+                    //finally update the element at that spot to show how many adjacent mines
+                    gridReal[x][y] = mineCount;
                 }
             }
         }
@@ -131,7 +151,7 @@ public class Game
      */
     private void printGrid()
     {
-        System.out.println("Real: \n");
+        System.out.print("Real: \n");
         //loop through all the columns
         for (int x = 0; x < chosenDim; x++)
         {
@@ -146,7 +166,7 @@ public class Game
         }
 
         //now do the same thing for the player's view
-        System.out.println("Player view: \n");
+        System.out.print("Player view: \n");
         //loop through all the rows
         for (int x = 0; x < chosenDim; x++)
         {
