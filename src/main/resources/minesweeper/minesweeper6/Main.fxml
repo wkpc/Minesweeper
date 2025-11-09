@@ -17,7 +17,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
    <children>
       <MenuBar>
          <menus>
@@ -43,19 +43,19 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <Label alignment="CENTER" layoutX="14.0" layoutY="8.0" prefHeight="25.0" prefWidth="148.0" text="Difficulty selection:" textAlignment="CENTER" />
-                  <Button fx:id="difficultyHard" layoutX="38.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#onDifficultyHardClicked" prefHeight="25.0" prefWidth="99.0" text="Hard" />
-                  <Button fx:id="difficultyNormal" layoutX="39.0" layoutY="84.0" mnemonicParsing="false" onMouseClicked="#onDifficultyNormalClicked" prefHeight="25.0" prefWidth="99.0" text="Normal" />
-                  <Button fx:id="difficultyEasy" layoutX="38.0" layoutY="124.0" mnemonicParsing="false" onMouseClicked="#onDifficultyEasyClicked" prefHeight="25.0" prefWidth="99.0" text="Easy" />
+                  <Button fx:id="DifficultyHard" layoutX="38.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#onDifficultyHardClicked" prefHeight="25.0" prefWidth="99.0" text="Hard" />
+                  <Button fx:id="DifficultyNormal" layoutX="39.0" layoutY="84.0" mnemonicParsing="false" onMouseClicked="#onDifficultyNormalClicked" prefHeight="25.0" prefWidth="99.0" text="Normal" />
+                  <Button fx:id="DifficultyEasy" layoutX="38.0" layoutY="124.0" mnemonicParsing="false" onMouseClicked="#onDifficultyEasyClicked" prefHeight="25.0" prefWidth="99.0" text="Easy" />
                   <Label alignment="CENTER" layoutX="14.0" layoutY="163.0" prefHeight="25.0" prefWidth="148.0" text="Current difficulty:" textAlignment="CENTER" />
-                  <Label fx:id="curDiff" alignment="CENTER" layoutX="33.0" layoutY="188.0" prefHeight="17.0" prefWidth="99.0" text="None" textAlignment="CENTER" />
-                  <Button fx:id="start" layoutX="39.0" layoutY="226.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" />
+                  <Label fx:id="CurDiff" alignment="CENTER" layoutX="39.0" layoutY="188.0" prefHeight="17.0" prefWidth="99.0" text="None" textAlignment="CENTER" />
+                  <Button fx:id="Start" layoutX="39.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
                </children>
             </AnchorPane>
             <Pane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <AnchorPane prefHeight="353.0" prefWidth="242.0">
                      <children>
-                        <GridPane>
+                        <GridPane fx:id="MainGrid">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -84,7 +84,7 @@
                </textFill>
             </Label>
             <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
-            <Label fx:id="InternalIssueNoti" font="$x3" maxWidth="-1.0" text="Right status" textFill="$x4" HBox.hgrow="NEVER" />
+            <Label fx:id="InternalIssueNoti" font="$x3" maxWidth="-1.0" text="Right status" textFill="RED" HBox.hgrow="NEVER" />
          </children>
          <padding>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
