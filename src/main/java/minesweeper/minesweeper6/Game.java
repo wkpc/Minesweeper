@@ -146,6 +146,11 @@ public class Game
         return gridPlayer[x][y];
     }
 
+    public void changePlayerElem(int x, int y, int e)
+    {
+        gridPlayer[x][y] = e;
+    }
+
     /**
      * helper function for debugging, print the contents of the grid (player and real) to the console
      */

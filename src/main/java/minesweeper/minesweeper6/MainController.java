@@ -111,6 +111,14 @@ public class MainController {
                     color = "-fx-base: #C23434;";
                 } else if (game.getPlayerElem(x, y) == 0)   //if the spot has been cleared by the player
                 {
+                    //update the label and color
+                    if (game.getRealElem(x, y) == 0)
+                    {
+                        label = "";
+                    }else
+                    {
+                        label = "" + game.getRealElem(x, y);
+                    }
                     color = "-fx-base: #DCDCDC;";
                 }
 
@@ -119,6 +127,7 @@ public class MainController {
                 button.setStyle(color);
                 button.setMinSize(30, 30);
                 MainGrid.add(button, x, y);
+                button.setOnMouseClicked(new GridButtonClickedHandler(x, y, button));
             }
         }
     }
@@ -148,8 +157,53 @@ public class MainController {
         @Override
         public void handle(Event event)
         {
-            //cast even into a MouseEvent to be able to determine which mouse button was clicked
+            //cast event into a MouseEvent to be able to determine which mouse button was clicked
             MouseEvent mEvent = (MouseEvent)event;
+
+            //first make sure game is still in progress
+            if (game.isRunning() == true)
+            {
+                //if right-clicked...
+                if (mEvent.getButton() == MouseButton.SECONDARY)
+                {
+                    if (game.getPlayerElem(column, row) == 2)   //if there wasn't a flag already, add it
+                    {
+                        game.changePlayerElem(column, row, 1);
+
+                        //update the label and color
+                        button.setText("F");
+                        button.setStyle("-fx-base: #C23434;");
+                    }else if (game.getPlayerElem(column, row) == 1)  //if there already was a flag, remove it
+                    {
+                        game.changePlayerElem(column, row, 2);
+
+                        //update the label and color
+                        button.setText("");
+                        button.setStyle("-fx-base: #969696;");
+                    }
+                    //if spot was already cleared, do nothing
+                } else if (mEvent.getButton() == MouseButton.PRIMARY && game.getPlayerElem(column, row) != 1)   //if left-clicked and no flag present...
+                {
+                    //if the spot has no mine, clear it
+                    if (game.getRealElem(column, row) != -1)
+                    {
+                        game.changePlayerElem(column, row, 0);
+
+                        //update the label and color
+                        if (game.getRealElem(column, row) == 0)
+                        {
+                            button.setText("");
+                        }else
+                        {
+                            button.setText("" + game.getRealElem(column, row));
+                        }
+                        button.setStyle("-fx-base: #DCDCDC;");
+                    }else   //otherwise if the spot has a mine
+                    {
+                        //end the game
+                    }
+                }
+            }
         }
     }
 }
