@@ -5,14 +5,16 @@ import java.util.Random;
 public class Game
 {
     //dimensions for different difficulties
-    private static final int HARDDIM = 24;
-    private static final int NORMALDIM = 12;
-    private static final int EASYDIM = 6;
+    private static final int HARDDIMX = 16;
+    private static final int HARDDIMY = 30;
+    private static final int NORMALDIM = 16;
+    private static final int EASYDIM = 9;
 
-    private static final int MINECHANCE = 25;   //mine spawn chance(%)
+    private static final int MINECHANCE = 20;   //mine spawn chance(%)
 
     private boolean running;
-    private int chosenDim;
+    private int chosenDimX;
+    private int chosenDimY;
     private int clearTiles;
 
     private int[][] gridReal;
@@ -27,21 +29,24 @@ public class Game
         switch (difficulty)
         {
             case "Hard":
-                chosenDim = HARDDIM;
+                chosenDimX = HARDDIMX;
+                chosenDimY = HARDDIMY;
                 break;
             case "Normal":
-                chosenDim = NORMALDIM;
+                chosenDimX = NORMALDIM;
+                chosenDimY = NORMALDIM;
                 break;
             default:
-                chosenDim = EASYDIM;
+                chosenDimX = EASYDIM;
+                chosenDimY = EASYDIM;
                 break;
         }
 
-        /*use 2d array to hold playing field, first two indexes are coordinates [x coord][y coord], element at [x][y][0]
+        /*use 2d array to hold playing field, first two indexes are coordinates [y coord][x coord], element at [y][x][0]
          is what is actually there. For the real grid, 2 options: -1's are mines, 0+ is the number of mines adjacent.
          For the player grid, 0's are clear, 1's are flags, and 2's are unknown.*/
-        gridReal = new int[chosenDim][chosenDim];
-        gridPlayer = new int[chosenDim][chosenDim];
+        gridReal = new int[chosenDimY][chosenDimX];
+        gridPlayer = new int[chosenDimY][chosenDimX];
 
         //call a helper function to populate the map, and set the game progress to true
         populateGrid();
@@ -60,23 +65,23 @@ public class Game
         int mine;
 
         //loop through all the rows
-        for (int x = 0; x < chosenDim; x++)
+        for (int y = 0; y < chosenDimY; y++)
         {
             //then the columns
-            for (int y = 0; y < chosenDim; y++)
+            for (int x = 0; x < chosenDimX; x++)
             {
                 //then add in a mine or an empty and cover it up for the player
                 mine = rand.nextInt(1, 101);    //adjusting mine spawn chance
 
                 if (mine <= MINECHANCE)
                 {
-                    gridReal[x][y] = -1;
+                    gridReal[y][x] = -1;
                 }else
                 {
-                    gridReal[x][y] = 0;
+                    gridReal[y][x] = 0;
                 }
 
-                gridPlayer[x][y] = 2;
+                gridPlayer[y][x] = 2;
             }
         }
 
@@ -85,19 +90,19 @@ public class Game
         //once all the mines have been added, must go back through the real grid and update all the clear spots to
         //reflect the number of mines adjacent
         //loop through all the rows
-        for (int x = 0; x < chosenDim; x++)
+        for (int y = 0; y < chosenDimY; y++)
         {
             //then the columns
-            for (int y = 0; y < chosenDim; y++)
+            for (int x = 0; x < chosenDimX; x++)
             {
                 //then if a clear spot is found...
-                if (gridReal[x][y] != -1)
+                if (gridReal[y][x] != -1)
                 {
                     clearTiles++;
 
                     //check in a circle around it, clockwise from top left
-                    int checkX = x - 1;
                     int checkY = y - 1;
+                    int checkX = x - 1;
                     int mineCount = 0;
 
                     //check row by row
@@ -106,10 +111,10 @@ public class Game
                         for (int cX = checkX; cX < checkX + 3; cX++)
                         {
                             //if that spot exists (i.e. not out of bounds)
-                            if (cX >= 0 && cX < chosenDim && cY >= 0 && cY < chosenDim)
+                            if (cX >= 0 && cX < chosenDimX && cY >= 0 && cY < chosenDimY)
                             {
                                 //check if there's a mine and add it to the count
-                                if (gridReal[cX][cY] == -1)
+                                if (gridReal[cY][cX] == -1)
                                 {
                                     mineCount++;
                                 }
@@ -118,7 +123,7 @@ public class Game
                     }
 
                     //finally update the element at that spot to show how many adjacent mines
-                    gridReal[x][y] = mineCount;
+                    gridReal[y][x] = mineCount;
                 }
             }
         }
@@ -137,9 +142,18 @@ public class Game
      * return the dimensions of the grid
      * @return chosenDim
      */
-    public int getChosenDim()
+    public int getChosenDimX()
     {
-        return chosenDim;
+        return chosenDimX;
+    }
+
+    /**
+     * return the dimensions of the grid
+     * @return chosenDim
+     */
+    public int getChosenDimY()
+    {
+        return chosenDimY;
     }
 
     /**
@@ -149,9 +163,9 @@ public class Game
      * @param y The y coord of the element
      * @return The element at (x, y) in the grid
      */
-    public int getRealElem(int x, int y)
+    public int getRealElem(int y, int x)
     {
-        return gridReal[x][y];
+        return gridReal[y][x];
     }
 
     /**
@@ -161,9 +175,9 @@ public class Game
      * @param y The y coord of the element
      * @return The element at (x, y) in the grid
      */
-    public int getPlayerElem(int x, int y)
+    public int getPlayerElem(int y, int x)
     {
-        return gridPlayer[x][y];
+        return gridPlayer[y][x];
     }
 
     /**
@@ -172,9 +186,9 @@ public class Game
      * @param y The y coord of the element to be replaced
      * @param e The new element to replace with
      */
-    public void changePlayerElem(int x, int y, int e)
+    public void changePlayerElem(int y, int x, int e)
     {
-        gridPlayer[x][y] = e;
+        gridPlayer[y][x] = e;
     }
 
     /**
@@ -215,13 +229,13 @@ public class Game
     {
         System.out.print("Real: \n");
         //loop through all the columns
-        for (int x = 0; x < chosenDim; x++)
+        for (int y = 0; y < chosenDimY; y++)
         {
-            //then the rows
-            for (int y = 0; y < chosenDim; y++)
+            //then the columns
+            for (int x = 0; x < chosenDimX; x++)
             {
                 //and print the real element there
-                System.out.print(gridReal[x][y] + ", ");
+                System.out.print(gridReal[y][x] + ", ");
             }
 
             System.out.print("\n");
@@ -230,13 +244,13 @@ public class Game
         //now do the same thing for the player's view
         System.out.print("Player view: \n");
         //loop through all the rows
-        for (int x = 0; x < chosenDim; x++)
+        for (int y = 0; y < chosenDimY; y++)
         {
-            //then the rows
-            for (int y = 0; y < chosenDim; y++)
+            //then the columns
+            for (int x = 0; x < chosenDimX; x++)
             {
                 //and print the fake element there
-                System.out.print(gridPlayer[x][y] + ", ");
+                System.out.print(gridPlayer[y][x] + ", ");
             }
 
             System.out.print("\n");

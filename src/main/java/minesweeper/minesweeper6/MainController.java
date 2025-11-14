@@ -134,27 +134,27 @@ public class MainController {
         MainGrid.getRowConstraints().remove(0, MainGrid.getRowConstraints().size());
 
         //begin to fill the grid with buttons with labels matching the player view of the grid
-        for (int x = 0; x < game.getChosenDim(); x++)
+        for (int y = 0; y < game.getChosenDimY(); y++)
         {
-            for (int y = 0; y < game.getChosenDim(); y++)
+            for (int x = 0; x < game.getChosenDimX(); x++)
             {
                 //set the label and the color
                 String label = "";
                 String color = "-fx-base: #969696;"; //default to unknown color
 
-                if (game.getPlayerElem(x, y) == 1)  //if the spot has been flagged by the player
+                if (game.getPlayerElem(y, x) == 1)  //if the spot has been flagged by the player
                 {
                     label = "F";
                     color = "-fx-base: #C23434;";
-                } else if (game.getPlayerElem(x, y) == 0)   //if the spot has been cleared by the player
+                } else if (game.getPlayerElem(y, x) == 0)   //if the spot has been cleared by the player
                 {
                     //update the label and color
-                    if (game.getRealElem(x, y) == 0)
+                    if (game.getRealElem(y, x) == 0)
                     {
                         label = "";
                     }else
                     {
-                        label = "" + game.getRealElem(x, y);
+                        label = "" + game.getRealElem(y, x);
                     }
                     color = "-fx-base: #DCDCDC;";
                 }
@@ -163,8 +163,8 @@ public class MainController {
                 Button button = new Button(label);
                 button.setStyle(color);
                 button.setMinSize(30, 30);
-                MainGrid.add(button, y, x);     //X AND Y IS FLIPPED, must reverse before giving coords
-                button.setOnMouseClicked(new GridButtonClickedHandler(x, y, button));
+                MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
+                button.setOnMouseClicked(new GridButtonClickedHandler(y, x, button));
             }
         }
     }
@@ -179,10 +179,10 @@ public class MainController {
         private Button button;
 
         //constructor
-        public GridButtonClickedHandler(int x, int y, Button button)
+        public GridButtonClickedHandler(int y, int x, Button button)
         {
-            this.column = x;
-            this.row = y;
+            this.column = y;
+            this.row = x;
             this.button = button;
         }
 
@@ -266,30 +266,30 @@ public class MainController {
     /**
      * Given a tile coordinate, checks to see if it is clear and if so, reveal all neighboring clear tiles to the player.
      * ONLY UPDATES THE GAME MAP, NOT THE VISUAL GRID. MUST RELOAD GRID AFTER TO SHOW CHANGES
-     * @param x The x coordinate of the tile to be checked
      * @param y The y coordinate of the tile to be checked
+     * @param x The x coordinate of the tile to be checked
      */
-    private void revealSpread(int x, int y)
+    private void revealSpread(int y, int x)
     {
         //if a clear tile has been found, check his direct (no diagonal) neighbors to see if non mines. If so, reveal them to the player as well
-        if (x < game.getChosenDim() && x >= 0 &&
-            y < game.getChosenDim() && y >= 0 &&
-            game.getPlayerElem(x, y) == 2)
+        if (x < game.getChosenDimX() && x >= 0 &&
+            y < game.getChosenDimY() && y >= 0 &&
+            game.getPlayerElem(y, x) == 2)
         {
             //if it was also another blank, continue the spread
-            if (game.getRealElem(x, y) == 0)
+            if (game.getRealElem(y, x) == 0)
             {
                 cleared++;
-                game.changePlayerElem(x, y, 0);
+                game.changePlayerElem(y, x, 0);
 
-                revealSpread(x, y - 1);
-                revealSpread(x + 1, y);
-                revealSpread(x, y + 1);
-                revealSpread(x - 1, y);
-            } else if (game.getPlayerElem(x, y) == 2)    //otherwise stop at that tile
+                revealSpread(y, x - 1);
+                revealSpread(y + 1, x);
+                revealSpread(y, x + 1);
+                revealSpread(y - 1, x);
+            } else if (game.getPlayerElem(y, x) == 2)    //otherwise stop at that tile
             {
                 cleared++;
-                game.changePlayerElem(x, y, 0);
+                game.changePlayerElem(y, x, 0);
             }
         }
     }
