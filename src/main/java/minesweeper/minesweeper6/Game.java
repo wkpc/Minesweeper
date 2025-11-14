@@ -4,12 +4,17 @@ import java.util.Random;
 
 public class Game
 {
-    private boolean running;
+    //dimensions for different difficulties
     private static final int HARDDIM = 24;
     private static final int NORMALDIM = 12;
     private static final int EASYDIM = 6;
+
+    private static final int MINECHANCE = 30;   //mine spawn chance(%)
+
+    private boolean running;
     private int chosenDim;
     private int clearTiles;
+
     private int[][] gridReal;
     private int[][] gridPlayer;
 
@@ -52,6 +57,7 @@ public class Game
     {
         //use a random number generator
         Random rand = new Random();
+        int mine;
 
         //loop through all the rows
         for (int x = 0; x < chosenDim; x++)
@@ -60,7 +66,16 @@ public class Game
             for (int y = 0; y < chosenDim; y++)
             {
                 //then add in a mine or an empty and cover it up for the player
-                gridReal[x][y] = rand.nextInt(-1, 1);
+                mine = rand.nextInt(1, 101);    //adjusting mine spawn chance
+
+                if (mine <= MINECHANCE)
+                {
+                    gridReal[x][y] = -1;
+                }else
+                {
+                    gridReal[x][y] = 0;
+                }
+
                 gridPlayer[x][y] = 2;
             }
         }

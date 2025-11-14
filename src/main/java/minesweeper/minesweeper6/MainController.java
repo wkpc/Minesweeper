@@ -6,10 +6,13 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+
+import java.util.Optional;
 
 public class MainController {
     @FXML
@@ -77,12 +80,41 @@ public class MainController {
         //make sure a difficulty was selected before making a new game
         if (difficulty != null)
         {
-            game = new Game(difficulty);
-            cleared = 0;
-            loadGrid();
+            //if a game is already in progress
+            if (game != null && game.isRunning() == true)
+            {
+                //ask the user for confirmation before restarting
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                alert.setTitle("Warning");
+                alert.setHeaderText("Restart?");
+                alert.setContentText("A game is currently in progress. Are you sure you want to restart?");
 
-            //then rename the label to restart
-            Start.setText("Restart");
+                //check to see what the player chose
+                Optional<ButtonType> result = alert.showAndWait();
+
+                //if the user confirmed, then restart the game
+                if (result.get() == ButtonType.OK)
+                {
+                    System.out.println("Okay");
+
+                    game = new Game(difficulty);
+                    cleared = 0;
+                    loadGrid();
+
+                    //then rename the label to restart
+                    Start.setText("Restart");
+                }
+
+                //otherwise do nothing if they cancelled
+            }else //if no game is in progress, skip confirmation checks and immediately create game
+            {
+                game = new Game(difficulty);
+                cleared = 0;
+                loadGrid();
+
+                //then rename the label to restart
+                Start.setText("Restart");
+            }
         }else //if no difficulty was chosen, do nothing and tell user to set difficulty first
         {
             InternalIssueNoti.setText("Choose a difficulty first.");
@@ -222,6 +254,9 @@ public class MainController {
         }
     }
 
+    /**
+     * creates an alert notifying user of loss
+     */
     private void gameOverNotification()
     {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -231,6 +266,9 @@ public class MainController {
         alert.show();
     }
 
+    /**
+     * creates an alert notifying user of victory
+     */
     private void victoryNotification()
     {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
