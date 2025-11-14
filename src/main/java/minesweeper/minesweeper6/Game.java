@@ -1,5 +1,7 @@
 package minesweeper.minesweeper6;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class Game
@@ -10,12 +12,11 @@ public class Game
     private static final int NORMALDIM = 16;
     private static final int EASYDIM = 9;
 
-    private static final int MINECHANCE = 20;   //mine spawn chance(%)
-
     private boolean running;
     private int chosenDimX;
     private int chosenDimY;
     private int clearTiles;
+    private int mineAmount;
 
     private int[][] gridReal;
     private int[][] gridPlayer;
@@ -31,14 +32,17 @@ public class Game
             case "Hard":
                 chosenDimX = HARDDIMX;
                 chosenDimY = HARDDIMY;
+                mineAmount = 99;
                 break;
             case "Normal":
                 chosenDimX = NORMALDIM;
                 chosenDimY = NORMALDIM;
+                mineAmount = 40;
                 break;
             default:
                 chosenDimX = EASYDIM;
                 chosenDimY = EASYDIM;
+                mineAmount = 10;
                 break;
         }
 
@@ -48,85 +52,8 @@ public class Game
         gridReal = new int[chosenDimY][chosenDimX];
         gridPlayer = new int[chosenDimY][chosenDimX];
 
-        //call a helper function to populate the map, and set the game progress to true
-        populateGrid();
-        printGrid();
+        //set the game progress to true
         running = true;
-    }
-
-    /**
-     * Fills the grids randomly with mines and empty spaces. -1's are mines, 0+ is the number of mines adjacent,
-     * player's view is completely filled with unknowns (2's, no flags)
-     */
-    private void populateGrid()
-    {
-        //use a random number generator
-        Random rand = new Random();
-        int mine;
-
-        //loop through all the rows
-        for (int y = 0; y < chosenDimY; y++)
-        {
-            //then the columns
-            for (int x = 0; x < chosenDimX; x++)
-            {
-                //then add in a mine or an empty and cover it up for the player
-                mine = rand.nextInt(1, 101);    //adjusting mine spawn chance
-
-                if (mine <= MINECHANCE)
-                {
-                    gridReal[y][x] = -1;
-                }else
-                {
-                    gridReal[y][x] = 0;
-                }
-
-                gridPlayer[y][x] = 2;
-            }
-        }
-
-        printGrid();
-
-        //once all the mines have been added, must go back through the real grid and update all the clear spots to
-        //reflect the number of mines adjacent
-        //loop through all the rows
-        for (int y = 0; y < chosenDimY; y++)
-        {
-            //then the columns
-            for (int x = 0; x < chosenDimX; x++)
-            {
-                //then if a clear spot is found...
-                if (gridReal[y][x] != -1)
-                {
-                    clearTiles++;
-
-                    //check in a circle around it, clockwise from top left
-                    int checkY = y - 1;
-                    int checkX = x - 1;
-                    int mineCount = 0;
-
-                    //check row by row
-                    for (int cY = checkY; cY < checkY + 3; cY++)
-                    {
-                        for (int cX = checkX; cX < checkX + 3; cX++)
-                        {
-                            //if that spot exists (i.e. not out of bounds)
-                            if (cX >= 0 && cX < chosenDimX && cY >= 0 && cY < chosenDimY)
-                            {
-                                //check if there's a mine and add it to the count
-                                if (gridReal[cY][cX] == -1)
-                                {
-                                    mineCount++;
-                                }
-                            }
-                        }
-                    }
-
-                    //finally update the element at that spot to show how many adjacent mines
-                    gridReal[y][x] = mineCount;
-                }
-            }
-        }
     }
 
     /**
@@ -220,6 +147,127 @@ public class Game
         }
 
         return false;
+    }
+
+    /**
+     * Fills the grids randomly with mines and empty spaces. -1's are mines, 0+ is the number of mines adjacent,
+     * player's view is completely filled with unknowns (2's, no flags). A 3x3 group of tiles centered on (y, x) will
+     * be left empty of mines.
+     * @param xB The x coord to leave blank
+     * @param yB The y coord to leave blank
+     */
+    public void populateGrid(int yB, int xB)
+    {
+        //start by filling the player grid with unknowns (2's)
+        for (int[] row : gridPlayer)
+        {
+            Arrays.fill(row, 2);
+        }
+
+        //then begin filling the real grid
+        //create a list of all possible positions inside the grid and populate it
+        ArrayList<ArrayList<Integer>> emptySpots = new ArrayList<ArrayList<Integer>>();
+
+        //loop through all the rows
+        for (int y = 0; y < chosenDimY; y++)
+        {
+            //add a new arraylist to hold the elements in the row
+            emptySpots.add(new ArrayList<Integer>());
+            emptySpots.get(y).add(y);   //first element in each row holds the y coordinate
+
+            //then loop the columns
+            for (int x = 0; x < chosenDimX; x++)
+            {
+                //and if the position is not in the 3x3 area centered on (yB, xB)
+                if ((y > yB + 1 || y < yB - 1) ||
+                        (x > xB + 1 || x < xB - 1))
+                {
+                    //then add in the position
+                    emptySpots.get(y).add(x);
+                }
+            }
+        }
+
+        /// DEBUG ///
+        //loop through all the columns
+        for (int y = 0; y < emptySpots.size(); y++)
+        {
+            //then the columns
+            for (int x = 0; x < emptySpots.get(y).size(); x++)
+            {
+                //and print the real element there
+                System.out.print(emptySpots.get(y).get(x) + ", ");
+            }
+
+            System.out.print("\n");
+        }
+
+        //then use a random number generator to pick out positions from inside the list
+        Random rand = new Random();
+        int yInd;
+        int xInd;
+
+        //loop through all the mines
+        for (int i = 0; i < mineAmount; i++)
+        {
+            //generate a random coord from the list
+            yInd = rand.nextInt(1, emptySpots.size());
+            //System.out.println("yInd: " + yInd);
+            xInd = rand.nextInt(1, emptySpots.get(yInd).size());
+
+            //add in a mine at that spot
+            gridReal[emptySpots.get(yInd).get(0)][emptySpots.get(yInd).get(xInd)] = -1;
+
+            //update the list of empty spots
+            emptySpots.get(yInd).remove(xInd);
+
+            //if that row is now empty, delete the row
+            if (emptySpots.get(yInd).isEmpty())
+            {
+                emptySpots.remove(yInd);
+            }
+        }
+
+        //once all the mines have been added, must go back through the real grid and update all the clear spots to
+        //reflect the number of mines adjacent
+        //loop through all the rows
+        for (int y = 0; y < chosenDimY; y++)
+        {
+            //then the columns
+            for (int x = 0; x < chosenDimX; x++)
+            {
+                //then if a clear spot is found...
+                if (gridReal[y][x] != -1)
+                {
+                    clearTiles++;
+
+                    //check in a circle around it, clockwise from top left
+                    int checkY = y - 1;
+                    int checkX = x - 1;
+                    int mineCount = 0;
+
+                    //check row by row
+                    for (int cY = checkY; cY < checkY + 3; cY++)
+                    {
+                        for (int cX = checkX; cX < checkX + 3; cX++)
+                        {
+                            //if that spot exists (i.e. not out of bounds)
+                            if (cX >= 0 && cX < chosenDimX && cY >= 0 && cY < chosenDimY)
+                            {
+                                //check if there's a mine and add it to the count
+                                if (gridReal[cY][cX] == -1)
+                                {
+                                    mineCount++;
+                                }
+                            }
+                        }
+                    }
+
+                    //finally update the element at that spot to show how many adjacent mines
+                    gridReal[y][x] = mineCount;
+                }
+            }
+        }
     }
 
     /**

@@ -40,6 +40,7 @@ public class MainController {
     private GridPane MainGrid;
 
     private Game game;
+    private boolean firstClick;
     private String difficulty;
     private int cleared;
 
@@ -48,6 +49,7 @@ public class MainController {
     {
         //start with the game being empty
         game = null;
+        firstClick = true;
         cleared = 0;
         InternalIssueNoti.setText("");
         MainGrid.getChildren().clear();
@@ -98,8 +100,9 @@ public class MainController {
                     System.out.println("Okay");
 
                     game = new Game(difficulty);
+                    firstClick = true;
                     cleared = 0;
-                    loadGrid();
+                    loadGrid(firstClick);
 
                     //then rename the label to restart
                     Start.setText("Restart");
@@ -109,8 +112,9 @@ public class MainController {
             }else //if no game is in progress, skip confirmation checks and immediately create game
             {
                 game = new Game(difficulty);
+                firstClick = true;
                 cleared = 0;
-                loadGrid();
+                loadGrid(firstClick);
 
                 //then rename the label to restart
                 Start.setText("Restart");
@@ -124,7 +128,7 @@ public class MainController {
     /**
      * clears the grid and loads the grid again
      */
-    private void loadGrid()
+    private void loadGrid(boolean firstClick)
     {
         //remove any prior buttons already there
         MainGrid.getChildren().clear();
@@ -142,21 +146,25 @@ public class MainController {
                 String label = "";
                 String color = "-fx-base: #969696;"; //default to unknown color
 
-                if (game.getPlayerElem(y, x) == 1)  //if the spot has been flagged by the player
+                //if player has not clicked yet, skip checks for other element types. Entire grid will be unknown
+                if (firstClick == false)
                 {
-                    label = "F";
-                    color = "-fx-base: #C23434;";
-                } else if (game.getPlayerElem(y, x) == 0)   //if the spot has been cleared by the player
-                {
-                    //update the label and color
-                    if (game.getRealElem(y, x) == 0)
+                    if (game.getPlayerElem(y, x) == 1)  //if the spot has been flagged by the player
                     {
-                        label = "";
-                    }else
+                        label = "F";
+                        color = "-fx-base: #C23434;";
+                    } else if (game.getPlayerElem(y, x) == 0)   //if the spot has been cleared by the player
                     {
-                        label = "" + game.getRealElem(y, x);
+                        //update the label and color
+                        if (game.getRealElem(y, x) == 0)
+                        {
+                            label = "";
+                        } else
+                        {
+                            label = "" + game.getRealElem(y, x);
+                        }
+                        color = "-fx-base: #DCDCDC;";
                     }
-                    color = "-fx-base: #DCDCDC;";
                 }
 
                 //create a new button
@@ -201,7 +209,7 @@ public class MainController {
             if (game.isRunning() == true)
             {
                 //if right-clicked...
-                if (mEvent.getButton() == MouseButton.SECONDARY)
+                if (mEvent.getButton() == MouseButton.SECONDARY && firstClick == false)
                 {
                     if (game.getPlayerElem(column, row) == 2)   //if there wasn't a flag already, add it
                     {
@@ -221,42 +229,54 @@ public class MainController {
                     //if spot was already cleared, do nothing
                 } else if (mEvent.getButton() == MouseButton.PRIMARY && game.getPlayerElem(column, row) != 1)   //if left-clicked and no flag present...
                 {
-                    //if the spot has no mine, clear it
-                    if (game.getRealElem(column, row) != -1)
+                    //if it is the first click of the game, populate the grid making sure to leave the clicked tile blank
+                    if (firstClick == true)
                     {
-                        //if it was a blank spot, check for spread
-                        if (game.getRealElem(column, row) == 0)
-                        {
-                            revealSpread(column, row);
-                            loadGrid();
-                        }else   //otherwise only have to change the element clicked on
-                        {
-                            game.changePlayerElem(column, row, 0);
+                        game.populateGrid(column, row);
+                        firstClick = false;
+                    }
 
-                            //update the label and color
+                    //make sure no flag or already cleared, otherwise do nothing (assuming is misclick)
+                    if (game.getPlayerElem(column, row) != 1 && game.getPlayerElem(column, row) != 0 )
+                    {
+                        //if the spot has no mine, clear it
+                        if (game.getRealElem(column, row) != -1)
+                        {
+                            //if it was a blank spot, check for spread
                             if (game.getRealElem(column, row) == 0)
                             {
-                                button.setText("");
-                            }else
+                                revealSpread(column, row);
+                                loadGrid(firstClick);
+                            } else   //otherwise only have to change the element clicked on
                             {
-                                button.setText("" + game.getRealElem(column, row));
+                                cleared++;
+                                game.changePlayerElem(column, row, 0);
+
+                                //update the label and color
+                                if (game.getRealElem(column, row) == 0)
+                                {
+                                    button.setText("");
+                                } else
+                                {
+                                    button.setText("" + game.getRealElem(column, row));
+                                }
+                                button.setStyle("-fx-base: #DCDCDC;");
                             }
-                            button.setStyle("-fx-base: #DCDCDC;");
-                        }
 
-                        System.out.println("cleared so far: " + cleared);
+                            System.out.println("cleared so far: " + cleared);
 
-                        //then check if the player has won
-                        if (game.checkVictory(cleared) == true)
+                            //then check if the player has won
+                            if (game.checkVictory(cleared) == true)
+                            {
+                                victoryNotification();
+                                game.end();
+                            }
+                        } else   //otherwise if the spot has a mine
                         {
-                            victoryNotification();
+                            //end the game
+                            gameOverNotification();
                             game.end();
                         }
-                    }else   //otherwise if the spot has a mine
-                    {
-                        //end the game
-                        gameOverNotification();
-                        game.end();
                     }
                 }
             }
