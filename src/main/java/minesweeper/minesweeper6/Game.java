@@ -9,7 +9,7 @@ public class Game
     private static final int NORMALDIM = 12;
     private static final int EASYDIM = 6;
 
-    private static final int MINECHANCE = 30;   //mine spawn chance(%)
+    private static final int MINECHANCE = 25;   //mine spawn chance(%)
 
     private boolean running;
     private int chosenDim;

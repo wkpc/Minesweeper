@@ -163,7 +163,7 @@ public class MainController {
                 Button button = new Button(label);
                 button.setStyle(color);
                 button.setMinSize(30, 30);
-                MainGrid.add(button, x, y);
+                MainGrid.add(button, y, x);     //X AND Y IS FLIPPED, must reverse before giving coords
                 button.setOnMouseClicked(new GridButtonClickedHandler(x, y, button));
             }
         }
@@ -224,24 +224,33 @@ public class MainController {
                     //if the spot has no mine, clear it
                     if (game.getRealElem(column, row) != -1)
                     {
-                        game.changePlayerElem(column, row, 0);
-                        cleared++;
-
-                        //update the label and color
+                        //if it was a blank spot, check for spread
                         if (game.getRealElem(column, row) == 0)
                         {
-                            button.setText("");
-                        }else
+                            revealSpread(column, row);
+                            loadGrid();
+                        }else   //otherwise only have to change the element clicked on
                         {
-                            button.setText("" + game.getRealElem(column, row));
+                            game.changePlayerElem(column, row, 0);
+
+                            //update the label and color
+                            if (game.getRealElem(column, row) == 0)
+                            {
+                                button.setText("");
+                            }else
+                            {
+                                button.setText("" + game.getRealElem(column, row));
+                            }
+                            button.setStyle("-fx-base: #DCDCDC;");
                         }
-                        button.setStyle("-fx-base: #DCDCDC;");
+
                         System.out.println("cleared so far: " + cleared);
 
                         //then check if the player has won
                         if (game.checkVictory(cleared) == true)
                         {
                             victoryNotification();
+                            game.end();
                         }
                     }else   //otherwise if the spot has a mine
                     {
@@ -250,6 +259,37 @@ public class MainController {
                         game.end();
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Given a tile coordinate, checks to see if it is clear and if so, reveal all neighboring clear tiles to the player.
+     * ONLY UPDATES THE GAME MAP, NOT THE VISUAL GRID. MUST RELOAD GRID AFTER TO SHOW CHANGES
+     * @param x The x coordinate of the tile to be checked
+     * @param y The y coordinate of the tile to be checked
+     */
+    private void revealSpread(int x, int y)
+    {
+        //if a clear tile has been found, check his direct (no diagonal) neighbors to see if non mines. If so, reveal them to the player as well
+        if (x < game.getChosenDim() && x >= 0 &&
+            y < game.getChosenDim() && y >= 0 &&
+            game.getPlayerElem(x, y) == 2)
+        {
+            //if it was also another blank, continue the spread
+            if (game.getRealElem(x, y) == 0)
+            {
+                cleared++;
+                game.changePlayerElem(x, y, 0);
+
+                revealSpread(x, y - 1);
+                revealSpread(x + 1, y);
+                revealSpread(x, y + 1);
+                revealSpread(x - 1, y);
+            } else if (game.getPlayerElem(x, y) == 2)    //otherwise stop at that tile
+            {
+                cleared++;
+                game.changePlayerElem(x, y, 0);
             }
         }
     }
