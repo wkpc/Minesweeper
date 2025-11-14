@@ -4,17 +4,20 @@ import java.util.Random;
 
 public class Game
 {
-    private static boolean running;
+    private boolean running;
     private static final int HARDDIM = 24;
     private static final int NORMALDIM = 12;
     private static final int EASYDIM = 6;
-    private static int chosenDim;
-    private static int[][] gridReal;
-    private static int[][] gridPlayer;
+    private int chosenDim;
+    private int clearTiles;
+    private int[][] gridReal;
+    private int[][] gridPlayer;
 
     //constructor
     public Game(String difficulty)
     {
+        clearTiles = 0;
+
         //create a grid with the correct dimensions according to difficulty
         switch (difficulty)
         {
@@ -75,6 +78,8 @@ public class Game
                 //then if a clear spot is found...
                 if (gridReal[x][y] != -1)
                 {
+                    clearTiles++;
+
                     //check in a circle around it, clockwise from top left
                     int checkX = x - 1;
                     int checkY = y - 1;
@@ -146,9 +151,46 @@ public class Game
         return gridPlayer[x][y];
     }
 
+    /**
+     * Swaps out an element at (x, y) in the player's grid for a new element e
+     * @param x The x coord of the element to be replaced
+     * @param y The y coord of the element to be replaced
+     * @param e The new element to replace with
+     */
     public void changePlayerElem(int x, int y, int e)
     {
         gridPlayer[x][y] = e;
+    }
+
+    /**
+     * starts the game
+     */
+    public void start()
+    {
+        running = true;
+    }
+
+    /**
+     * ends the game
+     */
+    public void end()
+    {
+        running = false;
+    }
+
+    /**
+     * Checks to see if the player won, by seeing if all the clear tiles have been found
+     * @param cleared The number of tiles cleared by the player
+     * @return true if the player won, false if not yet
+     */
+    public boolean checkVictory(int cleared)
+    {
+        if (cleared == clearTiles)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -184,5 +226,7 @@ public class Game
 
             System.out.print("\n");
         }
+
+        System.out.println("Clear Tiles: " + clearTiles);
     }
 }

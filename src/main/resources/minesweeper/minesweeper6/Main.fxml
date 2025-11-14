@@ -49,6 +49,7 @@
                   <Label alignment="CENTER" layoutX="14.0" layoutY="163.0" prefHeight="25.0" prefWidth="148.0" text="Current difficulty:" textAlignment="CENTER" />
                   <Label fx:id="CurDiff" alignment="CENTER" layoutX="39.0" layoutY="188.0" prefHeight="17.0" prefWidth="99.0" text="None" textAlignment="CENTER" />
                   <Button fx:id="Start" layoutX="39.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
+                  <Button fx:id="TestButton" layoutX="39.0" layoutY="276.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Test" />
                </children>
             </AnchorPane>
             <Pane prefHeight="200.0" prefWidth="200.0">

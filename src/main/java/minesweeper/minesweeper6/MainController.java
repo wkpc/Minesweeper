@@ -1,8 +1,10 @@
 package minesweeper.minesweeper6;
 
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
@@ -36,12 +38,14 @@ public class MainController {
 
     private Game game;
     private String difficulty;
+    private int cleared;
 
     @FXML
     void initialize()
     {
         //start with the game being empty
         game = null;
+        cleared = 0;
         InternalIssueNoti.setText("");
         MainGrid.getChildren().clear();
     }
@@ -74,6 +78,7 @@ public class MainController {
         if (difficulty != null)
         {
             game = new Game(difficulty);
+            cleared = 0;
             loadGrid();
 
             //then rename the label to restart
@@ -188,6 +193,7 @@ public class MainController {
                     if (game.getRealElem(column, row) != -1)
                     {
                         game.changePlayerElem(column, row, 0);
+                        cleared++;
 
                         //update the label and color
                         if (game.getRealElem(column, row) == 0)
@@ -198,12 +204,39 @@ public class MainController {
                             button.setText("" + game.getRealElem(column, row));
                         }
                         button.setStyle("-fx-base: #DCDCDC;");
+                        System.out.println("cleared so far: " + cleared);
+
+                        //then check if the player has won
+                        if (game.checkVictory(cleared) == true)
+                        {
+                            victoryNotification();
+                        }
                     }else   //otherwise if the spot has a mine
                     {
                         //end the game
+                        gameOverNotification();
+                        game.end();
                     }
                 }
             }
         }
+    }
+
+    private void gameOverNotification()
+    {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Game over!");
+        alert.setHeaderText("Game over!");
+        alert.setContentText("You hit a mine!");
+        alert.show();
+    }
+
+    private void victoryNotification()
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Victory!");
+        alert.setHeaderText("Victory!");
+        alert.setContentText("All mines have been cleared!");
+        alert.show();
     }
 }
