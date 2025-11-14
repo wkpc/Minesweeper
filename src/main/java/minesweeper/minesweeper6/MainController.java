@@ -1,6 +1,5 @@
 package minesweeper.minesweeper6;
 
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -14,7 +13,8 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.Optional;
 
-public class MainController {
+public class MainController
+{
     @FXML
     private Label InternalIssueNoti;
 
@@ -102,7 +102,7 @@ public class MainController {
                     game = new Game(difficulty);
                     firstClick = true;
                     cleared = 0;
-                    loadGrid(firstClick);
+                    loadPlayerGrid(firstClick);
 
                     //then rename the label to restart
                     Start.setText("Restart");
@@ -114,7 +114,7 @@ public class MainController {
                 game = new Game(difficulty);
                 firstClick = true;
                 cleared = 0;
-                loadGrid(firstClick);
+                loadPlayerGrid(firstClick);
 
                 //then rename the label to restart
                 Start.setText("Restart");
@@ -126,9 +126,10 @@ public class MainController {
     }
 
     /**
-     * clears the grid and loads the grid again
+     * Clears the grid and loads the player's view of the grid
+     * @param firstClick Checks if the grid has been populated yet
      */
-    private void loadGrid(boolean firstClick)
+    private void loadPlayerGrid(boolean firstClick)
     {
         //remove any prior buttons already there
         MainGrid.getChildren().clear();
@@ -137,14 +138,17 @@ public class MainController {
         MainGrid.getColumnConstraints().remove(0, MainGrid.getColumnConstraints().size());
         MainGrid.getRowConstraints().remove(0, MainGrid.getRowConstraints().size());
 
+        String label;
+        String color;
+
         //begin to fill the grid with buttons with labels matching the player view of the grid
         for (int y = 0; y < game.getChosenDimY(); y++)
         {
             for (int x = 0; x < game.getChosenDimX(); x++)
             {
                 //set the label and the color
-                String label = "";
-                String color = "-fx-base: #969696;"; //default to unknown color
+                label = "";
+                color = "-fx-base: #969696;"; //default to unknown color
 
                 //if player has not clicked yet, skip checks for other element types. Entire grid will be unknown
                 if (firstClick == false)
@@ -166,6 +170,54 @@ public class MainController {
                         color = "-fx-base: #DCDCDC;";
                     }
                 }
+
+                //create a new button
+                Button button = new Button(label);
+                button.setStyle(color);
+                button.setMinSize(30, 30);
+                MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
+                button.setOnMouseClicked(new GridButtonClickedHandler(y, x, button));
+            }
+        }
+    }
+
+    /**
+     * Clears the grid and loads the real view of the grid
+     */
+    private void loadRealGrid()
+    {
+        //remove any prior buttons already there
+        MainGrid.getChildren().clear();
+
+        //reset grid boundaries
+        MainGrid.getColumnConstraints().remove(0, MainGrid.getColumnConstraints().size());
+        MainGrid.getRowConstraints().remove(0, MainGrid.getRowConstraints().size());
+
+        String label;
+        String color;
+
+        //begin to fill the grid with buttons with labels matching the real view of the grid
+        for (int y = 0; y < game.getChosenDimY(); y++)
+        {
+            for (int x = 0; x < game.getChosenDimX(); x++)
+            {
+                //set the label and the color
+                if (game.getRealElem(y, x) == -1)    //if the spot has been a mine
+                {
+                    label = "M";
+                    color = "-fx-base: #C23434;";
+                } else  //if the spot is clear
+                {
+                    label = "" + game.getRealElem(y, x);
+
+                    if (label.equals("0"))
+                    {
+                        label = "";
+                    }
+
+                    color = "-fx-base: #DCDCDC;";
+                }
+
 
                 //create a new button
                 Button button = new Button(label);
@@ -246,7 +298,7 @@ public class MainController {
                             if (game.getRealElem(column, row) == 0)
                             {
                                 revealSpread(column, row);
-                                loadGrid(firstClick);
+                                loadPlayerGrid(firstClick);
                             } else   //otherwise only have to change the element clicked on
                             {
                                 cleared++;
@@ -273,8 +325,9 @@ public class MainController {
                             }
                         } else   //otherwise if the spot has a mine
                         {
-                            //end the game
+                            //end the game and show the player the real board
                             gameOverNotification();
+                            loadRealGrid();
                             game.end();
                         }
                     }
