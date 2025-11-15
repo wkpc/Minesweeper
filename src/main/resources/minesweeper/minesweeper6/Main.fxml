@@ -7,7 +7,6 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -17,9 +16,9 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
    <children>
-      <MenuBar>
+      <MenuBar maxHeight="-Infinity" minHeight="-Infinity" VBox.vgrow="NEVER">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
@@ -38,43 +37,39 @@
             </Menu>
          </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.2976588628762542, 0.7023411371237458" prefHeight="365.0" prefWidth="600.0">
+      <SplitPane dividerPositions="0.2976588628762542, 0.7023411371237458" prefHeight="365.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <items>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
                <children>
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="8.0" prefHeight="25.0" prefWidth="148.0" text="Difficulty selection:" textAlignment="CENTER" />
-                  <Button fx:id="DifficultyHard" layoutX="38.0" layoutY="42.0" mnemonicParsing="false" onMouseClicked="#onDifficultyHardClicked" prefHeight="25.0" prefWidth="99.0" text="Hard" />
-                  <Button fx:id="DifficultyNormal" layoutX="39.0" layoutY="84.0" mnemonicParsing="false" onMouseClicked="#onDifficultyNormalClicked" prefHeight="25.0" prefWidth="99.0" text="Normal" />
-                  <Button fx:id="DifficultyEasy" layoutX="38.0" layoutY="124.0" mnemonicParsing="false" onMouseClicked="#onDifficultyEasyClicked" prefHeight="25.0" prefWidth="99.0" text="Easy" />
-                  <Label alignment="CENTER" layoutX="14.0" layoutY="163.0" prefHeight="25.0" prefWidth="148.0" text="Current difficulty:" textAlignment="CENTER" />
-                  <Label fx:id="CurDiff" alignment="CENTER" layoutX="39.0" layoutY="188.0" prefHeight="17.0" prefWidth="99.0" text="None" textAlignment="CENTER" />
-                  <Button fx:id="Start" layoutX="39.0" layoutY="226.0" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
-                  <Button fx:id="TestButton" layoutX="39.0" layoutY="276.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="99.0" text="Test" />
+                  <Label alignment="CENTER" prefHeight="25.0" prefWidth="148.0" text="Difficulty selection:" textAlignment="CENTER" />
+                  <Button fx:id="DifficultyHard" mnemonicParsing="false" onMouseClicked="#onDifficultyHardClicked" prefHeight="25.0" prefWidth="99.0" text="Hard" />
+                  <Button fx:id="DifficultyNormal" mnemonicParsing="false" onMouseClicked="#onDifficultyNormalClicked" prefHeight="25.0" prefWidth="99.0" text="Normal" />
+                  <Button fx:id="DifficultyEasy" mnemonicParsing="false" onMouseClicked="#onDifficultyEasyClicked" prefHeight="25.0" prefWidth="99.0" text="Easy" />
+                  <Pane prefHeight="34.0" prefWidth="200.0" />
+                  <Label alignment="CENTER" prefHeight="25.0" prefWidth="148.0" text="Current difficulty:" textAlignment="CENTER" />
+                  <Label fx:id="CurDiff" alignment="CENTER" prefHeight="17.0" prefWidth="99.0" text="None" textAlignment="CENTER" />
+                  <Button fx:id="Start" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
                </children>
-            </AnchorPane>
-            <Pane prefHeight="200.0" prefWidth="200.0">
+            </VBox>
+            <HBox fx:id="CenterPane" alignment="CENTER" prefHeight="353.0" prefWidth="186.0">
                <children>
-                  <AnchorPane prefHeight="353.0" prefWidth="242.0">
-                     <children>
-                        <GridPane fx:id="MainGrid">
-                           <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                           </columnConstraints>
-                           <rowConstraints>
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                           </rowConstraints>
-                        </GridPane>
-                     </children>
-                  </AnchorPane>
+                  <GridPane fx:id="MainGrid" alignment="CENTER" prefHeight="142.0" prefWidth="132.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
                </children>
-            </Pane>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="351.0" prefWidth="238.0" />
+            </HBox>
+            <VBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
          </items>
       </SplitPane>
-      <HBox id="HBox" alignment="CENTER_LEFT" spacing="5.0">
+      <HBox id="HBox" alignment="BASELINE_LEFT" maxHeight="-Infinity" minHeight="-Infinity" spacing="5.0" VBox.vgrow="NEVER">
          <children>
             <Label fx:id="UserActionNoti" maxHeight="1.7976931348623157E308" maxWidth="-1.0" text="Left status" HBox.hgrow="ALWAYS">
                <font>

@@ -224,7 +224,6 @@ public class MainController
                 button.setStyle(color);
                 button.setMinSize(30, 30);
                 MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
-                button.setOnMouseClicked(new GridButtonClickedHandler(y, x, button));
             }
         }
     }

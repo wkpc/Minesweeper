@@ -12,8 +12,10 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException
     {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("Main.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 900, 950);  //width and height
         stage.setTitle("Minesweeper");
+        stage.setMinWidth(900);
+        stage.setMinHeight(600);
         stage.setScene(scene);
         stage.show();
     }
