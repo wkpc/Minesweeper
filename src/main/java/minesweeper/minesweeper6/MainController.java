@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -13,6 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 
 import java.util.Optional;
 
@@ -55,6 +57,9 @@ public class MainController
     private static final String BLUE = "#0030BE";
     private static final String BLACK = "#000000";
 
+    /**
+     * On game launch, set up the window
+     */
     @FXML
     void initialize()
     {
@@ -67,6 +72,10 @@ public class MainController
         MainGrid.getChildren().clear();
     }
 
+    /**
+     * Set the difficulty to hard
+     * @param event Not used
+     */
     @FXML
     void onDifficultyHardClicked(MouseEvent event)
     {
@@ -74,6 +83,10 @@ public class MainController
         difficulty = "Hard";
     }
 
+    /**
+     * Set the difficulty to normal
+     * @param event Not used
+     */
     @FXML
     void onDifficultyNormalClicked(MouseEvent event)
     {
@@ -81,6 +94,10 @@ public class MainController
         difficulty = "Normal";
     }
 
+    /**
+     * Set the difficulty to easy
+     * @param event Not used
+     */
     @FXML
     void onDifficultyEasyClicked(MouseEvent event)
     {
@@ -88,6 +105,10 @@ public class MainController
         difficulty = "Easy";
     }
 
+    /**
+     * checks if a difficulty has been selected, and start (or restarts) a new game.
+     * @param event Not used
+     */
     @FXML
     void onStartClicked(MouseEvent event)
     {
@@ -457,6 +478,31 @@ public class MainController
         alert.show();
     }
 
+    /**
+     * When the "Fullscreen" option is selected in the menu>exit dropdown, toggle fullscreen
+     * @param event Not used
+     */
+    @FXML
+    void onMenuFullscreenClicked(ActionEvent event)
+    {
+        //get the current stage
+        Stage stage = (Stage)CurDiff.getScene().getWindow();
+        stage.setFullScreenExitHint("");
+
+        //switch between fullscreen and windowed
+        if (stage.isFullScreen())
+        {
+            stage.setFullScreen(false);
+        }else
+        {
+            stage.setFullScreen(true);
+        }
+    }
+
+    /**
+     * When the "Exit" option is selected in the menu>exit dropdown, close the program
+     * @param event Not used
+     */
     @FXML
     void onMenuExitClicked(ActionEvent event)
     {
@@ -464,7 +510,7 @@ public class MainController
     }
 
     /**
-     * When the "about" option is selected in the menu>help dropdown
+     * When the "About" option is selected in the menu>help dropdown, show an "About" pop up
      * @param event Not used
      */
     @FXML

@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
@@ -22,6 +23,7 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
+                  <CheckMenuItem mnemonicParsing="false" onAction="#onMenuFullscreenClicked" text="Fullscreen" />
                   <MenuItem mnemonicParsing="false" onAction="#onMenuExitClicked" text="Exit" />
                </items>
             </Menu>
