@@ -188,20 +188,6 @@ public class Game
             }
         }
 
-        /// DEBUG ///
-        //loop through all the columns
-        for (int y = 0; y < emptySpots.size(); y++)
-        {
-            //then the columns
-            for (int x = 0; x < emptySpots.get(y).size(); x++)
-            {
-                //and print the real element there
-                System.out.print(emptySpots.get(y).get(x) + ", ");
-            }
-
-            System.out.print("\n");
-        }
-
         //then use a random number generator to pick out positions from inside the list
         Random rand = new Random();
         int yInd;

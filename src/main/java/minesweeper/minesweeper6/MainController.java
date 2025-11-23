@@ -130,8 +130,6 @@ public class MainController
                 //if the user confirmed, then restart the game
                 if (result.get() == ButtonType.OK)
                 {
-                    System.out.println("Okay");
-
                     game = new Game(difficulty);
                     firstClick = true;
                     cleared = 0;
@@ -396,8 +394,6 @@ public class MainController
 
                                 button.setStyle(WHITE);
                             }
-
-                            System.out.println("cleared so far: " + cleared);
 
                             //then check if the player has won
                             if (game.checkVictory(cleared) == true)
