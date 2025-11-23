@@ -1,5 +1,7 @@
 package minesweeper.minesweeper6;
 
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -10,6 +12,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 import java.util.Optional;
 
@@ -19,7 +22,7 @@ public class MainController
     private Label InternalIssueNoti;
 
     @FXML
-    private Label UserActionNoti;
+    private Label UserActionNoti; //unused
 
     @FXML
     private Label CurDiff;
@@ -44,6 +47,14 @@ public class MainController
     private String difficulty;
     private int cleared;
 
+    /// GRID COLORS ///
+    private static final String WHITE = "#DCDCDC";    //actually closer to a very light grey
+    private static final String GRAY = "#969696;";
+    private static final String RED = "#C23434";
+    private static final String GREEN = "#26a317";
+    private static final String BLUE = "#0030BE";
+    private static final String BLACK = "#000000";
+
     @FXML
     void initialize()
     {
@@ -52,6 +63,7 @@ public class MainController
         firstClick = true;
         cleared = 0;
         InternalIssueNoti.setText("");
+        UserActionNoti.setText("");
         MainGrid.getChildren().clear();
     }
 
@@ -140,6 +152,7 @@ public class MainController
 
         String label;
         String color;
+        String labelColor;
 
         //begin to fill the grid with buttons with labels matching the player view of the grid
         for (int y = 0; y < game.getChosenDimY(); y++)
@@ -148,7 +161,8 @@ public class MainController
             {
                 //set the label and the color
                 label = "";
-                color = "-fx-base: #969696;"; //default to unknown color
+                labelColor = RED;
+                color = "-fx-base: " + GRAY; //default to unknown color
 
                 //if player has not clicked yet, skip checks for other element types. Entire grid will be unknown
                 if (firstClick == false)
@@ -156,10 +170,11 @@ public class MainController
                     if (game.getPlayerElem(y, x) == 1)  //if the spot has been flagged by the player
                     {
                         label = "F";
-                        color = "-fx-base: #C23434;";
+                        labelColor = BLACK;
+                        color = "-fx-base: " + RED;
                     } else if (game.getPlayerElem(y, x) == 0)   //if the spot has been cleared by the player
                     {
-                        //update the label and color
+                        //update the label...
                         if (game.getRealElem(y, x) == 0)
                         {
                             label = "";
@@ -167,13 +182,25 @@ public class MainController
                         {
                             label = "" + game.getRealElem(y, x);
                         }
-                        color = "-fx-base: #DCDCDC;";
+
+                        //and the label color...
+                        if (label.equals("1"))
+                        {
+                            labelColor = BLUE;
+                        } else if (label.equals("2"))
+                        {
+                            labelColor = GREEN;
+                        }   //if 3 or more mines adjacent, text is red
+
+                        color = "-fx-base: " + WHITE;
                     }
                 }
 
                 //create a new button
                 Button button = new Button(label);
                 button.setStyle(color);
+                button.setTextFill(Color.web(labelColor));
+                
                 button.setMinSize(30, 30);
                 MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
                 button.setOnMouseClicked(new GridButtonClickedHandler(y, x, button));
@@ -194,7 +221,10 @@ public class MainController
         MainGrid.getRowConstraints().remove(0, MainGrid.getRowConstraints().size());
 
         String label;
+        String labelColor;
         String color;
+        //Image img = new Image("naval-mine.jpg");
+        //ImageView imgView;
 
         //begin to fill the grid with buttons with labels matching the real view of the grid
         for (int y = 0; y < game.getChosenDimY(); y++)
@@ -202,12 +232,17 @@ public class MainController
             for (int x = 0; x < game.getChosenDimX(); x++)
             {
                 //set the label and the color
-                if (game.getRealElem(y, x) == -1)    //if the spot has been a mine
+                if (game.getRealElem(y, x) == -1)    //if the spot had a mine
                 {
                     label = "M";
-                    color = "-fx-base: #C23434;";
+                    labelColor = BLACK;
+                    color = "-fx-base: " + RED;
+
+                    //imgView = new ImageView(img);
+
                 } else  //if the spot is clear
                 {
+                    //set the label
                     label = "" + game.getRealElem(y, x);
 
                     if (label.equals("0"))
@@ -215,13 +250,27 @@ public class MainController
                         label = "";
                     }
 
-                    color = "-fx-base: #DCDCDC;";
+                    labelColor = RED;
+
+                    //and the label color...
+                    if (label.equals("1"))
+                    {
+                        labelColor = BLUE;
+                    } else if (label.equals("2"))
+                    {
+                        labelColor = GREEN;
+                    }   //if 3 or more mines adjacent, text is red
+
+                    //imgView = null;
+                    color = "-fx-base: " + WHITE;
                 }
 
 
                 //create a new button
                 Button button = new Button(label);
                 button.setStyle(color);
+                button.setTextFill(Color.web(labelColor));
+                //button.setGraphic(imgView);
                 button.setMinSize(30, 30);
                 MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
             }
@@ -268,14 +317,15 @@ public class MainController
 
                         //update the label and color
                         button.setText("F");
-                        button.setStyle("-fx-base: #C23434;");
+                        button.setStyle("-fx-base: " + RED);
+                        button.setTextFill(Color.web(BLACK));
                     }else if (game.getPlayerElem(column, row) == 1)  //if there already was a flag, remove it
                     {
                         game.changePlayerElem(column, row, 2);
 
                         //update the label and color
                         button.setText("");
-                        button.setStyle("-fx-base: #969696;");
+                        button.setStyle("-fx-base: " + GRAY);
                     }
                     //if spot was already cleared, do nothing
                 } else if (mEvent.getButton() == MouseButton.PRIMARY && game.getPlayerElem(column, row) != 1)   //if left-clicked and no flag present...
@@ -290,7 +340,7 @@ public class MainController
                     //make sure no flag or already cleared, otherwise do nothing (assuming is misclick)
                     if (game.getPlayerElem(column, row) != 1 && game.getPlayerElem(column, row) != 0 )
                     {
-                        //if the spot has no mine, clear it
+                        //if the spot has no mine, try to clear it
                         if (game.getRealElem(column, row) != -1)
                         {
                             //if it was a blank spot, check for spread
@@ -311,7 +361,19 @@ public class MainController
                                 {
                                     button.setText("" + game.getRealElem(column, row));
                                 }
-                                button.setStyle("-fx-base: #DCDCDC;");
+
+                                if (button.getText().equals("1"))
+                                {
+                                    button.setTextFill(Color.web(BLUE));
+                                } else if (button.getText().equals("2"))
+                                {
+                                    button.setTextFill(Color.web(GREEN));
+                                } else
+                                {
+                                    button.setTextFill(Color.web(RED));
+                                }
+
+                                button.setStyle(WHITE);
                             }
 
                             System.out.println("cleared so far: " + cleared);
@@ -320,6 +382,7 @@ public class MainController
                             if (game.checkVictory(cleared) == true)
                             {
                                 victoryNotification();
+                                loadRealGrid();
                                 game.end();
                             }
                         } else   //otherwise if the spot has a mine
@@ -355,9 +418,13 @@ public class MainController
                 game.changePlayerElem(y, x, 0);
 
                 revealSpread(y, x - 1);
+                revealSpread(y + 1, x - 1);
                 revealSpread(y + 1, x);
+                revealSpread(y + 1, x + 1);
                 revealSpread(y, x + 1);
+                revealSpread(y - 1, x + 1);
                 revealSpread(y - 1, x);
+                revealSpread(y - 1, x - 1);
             } else if (game.getPlayerElem(y, x) == 2)    //otherwise stop at that tile
             {
                 cleared++;
@@ -387,6 +454,30 @@ public class MainController
         alert.setTitle("Victory!");
         alert.setHeaderText("Victory!");
         alert.setContentText("All mines have been cleared!");
+        alert.show();
+    }
+
+    @FXML
+    void onMenuExitClicked(ActionEvent event)
+    {
+        Platform.exit();
+    }
+
+    /**
+     * When the "about" option is selected in the menu>help dropdown
+     * @param event Not used
+     */
+    @FXML
+    void onAboutClicked(ActionEvent event)
+    {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About the program");
+        alert.setHeaderText("About the program");
+        alert.setContentText("Author: Weikai Chen\n" +
+                "Email: weikai.c@gmail.com\n" +
+                "This is a recreation of the classic game Minesweeper. To clear a tile, " +
+                "use left click. To flag a tile, right click. For more detailed instructions, " +
+                "check the readme");
         alert.show();
     }
 }

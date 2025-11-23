@@ -16,30 +16,25 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" stylesheets="@StyleSheet.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="minesweeper.minesweeper6.MainController">
    <children>
       <MenuBar maxHeight="-Infinity" minHeight="-Infinity" VBox.vgrow="NEVER">
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Close" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Delete" />
+                  <MenuItem mnemonicParsing="false" onAction="#onMenuExitClicked" text="Exit" />
                </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
                <items>
-                  <MenuItem mnemonicParsing="false" text="About" />
+                  <MenuItem mnemonicParsing="false" onAction="#onAboutClicked" text="About" />
                </items>
             </Menu>
          </menus>
       </MenuBar>
       <SplitPane dividerPositions="0.2976588628762542, 0.7023411371237458" prefHeight="365.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <items>
-            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
+            <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="sidePane" SplitPane.resizableWithParent="false">
                <children>
                   <Label alignment="CENTER" prefHeight="25.0" prefWidth="148.0" text="Difficulty selection:" textAlignment="CENTER" />
                   <Button fx:id="DifficultyHard" mnemonicParsing="false" onMouseClicked="#onDifficultyHardClicked" prefHeight="25.0" prefWidth="99.0" text="Hard" />
@@ -51,9 +46,9 @@
                   <Button fx:id="Start" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
                </children>
             </VBox>
-            <HBox fx:id="CenterPane" alignment="CENTER" prefHeight="353.0" prefWidth="186.0">
+            <HBox fx:id="CenterPane" alignment="TOP_CENTER" prefHeight="353.0" prefWidth="186.0">
                <children>
-                  <GridPane fx:id="MainGrid" alignment="CENTER" prefHeight="142.0" prefWidth="132.0">
+                  <GridPane id="centerPane" fx:id="MainGrid" alignment="CENTER" gridLinesVisible="true" prefHeight="142.0" prefWidth="132.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -66,7 +61,7 @@
                   </GridPane>
                </children>
             </HBox>
-            <VBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false" />
+            <VBox maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="sidePane" SplitPane.resizableWithParent="false" />
          </items>
       </SplitPane>
       <HBox id="HBox" alignment="BASELINE_LEFT" maxHeight="-Infinity" minHeight="-Infinity" spacing="5.0" VBox.vgrow="NEVER">
