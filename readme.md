@@ -20,7 +20,8 @@ Prompt and typing in the file path.
 
 If you already had JavaFx installed on your computer and chose not to download the "javafx-sdk-25.0.1" file, you must
 first open "Minesweeper.bat" in a text editor of your choice, and replace ".\javafx-sdk-25.0.1\lib" with the file URL of
-the "lib" folder inside the JavaFX files on your computer.
+the "lib" folder inside the JavaFX files on your computer. This program was designed with version 25.0.1 of JavaFX and
+may NOT work correctly with different versions.
 
 ## How to interact with it
 To start a game, choose a difficulty and press "start". At any point, if you want to restart or change
