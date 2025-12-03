@@ -6,6 +6,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -13,13 +14,18 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.GridPane;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 import java.util.Optional;
 
 public class MainController
 {
+    @FXML
+    private HBox CenterPane;
+
     @FXML
     private Label InternalIssueNoti;
 
@@ -145,11 +151,19 @@ public class MainController
                 game = new Game(difficulty);
                 firstClick = true;
                 cleared = 0;
+
+                //make the grid size scale with the window
+                MainGrid.prefWidthProperty().bind(CenterPane.widthProperty().multiply(0.75));
+                MainGrid.prefHeightProperty().bind(CenterPane.heightProperty().multiply(0.6));
+
                 loadPlayerGrid(firstClick);
 
                 //then rename the label to restart
                 Start.setText("Restart");
             }
+
+            //remove difficulty notification warning
+            InternalIssueNoti.setText("");
         }else //if no difficulty was chosen, do nothing and tell user to set difficulty first
         {
             InternalIssueNoti.setText("Choose a difficulty first.");
@@ -220,7 +234,10 @@ public class MainController
                 button.setStyle(color);
                 button.setTextFill(Color.web(labelColor));
                 
-                button.setMinSize(30, 30);
+                //size the button to a portion of the window
+                button.setMinSize(1, 1);
+                button.prefWidthProperty().bind(MainGrid.widthProperty().multiply(game.getChosenDimX()));
+                button.prefHeightProperty().bind(MainGrid.heightProperty().multiply(game.getChosenDimY()));
                 MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
                 button.setOnMouseClicked(new GridButtonClickedHandler(y, x, button));
             }
@@ -289,8 +306,11 @@ public class MainController
                 Button button = new Button(label);
                 button.setStyle(color);
                 button.setTextFill(Color.web(labelColor));
-                //button.setGraphic(imgView);
-                button.setMinSize(30, 30);
+
+                //size the button to a portion of the window
+                button.setMinSize(1, 1);
+                button.prefWidthProperty().bind(MainGrid.widthProperty().multiply(game.getChosenDimX()));
+                button.prefHeightProperty().bind(MainGrid.heightProperty().multiply(game.getChosenDimY()));
                 MainGrid.add(button, x, y);     //coords are flipped for this, expects (x, y) not (y, x)
             }
         }
@@ -475,7 +495,7 @@ public class MainController
     }
 
     /**
-     * When the "Fullscreen" option is selected in the menu>exit dropdown, toggle fullscreen
+     * When the "Fullscreen" option is selected in the menu>exit dropdown, toggle borderless windowed
      * @param event Not used
      */
     @FXML
@@ -483,15 +503,17 @@ public class MainController
     {
         //get the current stage
         Stage stage = (Stage)CurDiff.getScene().getWindow();
-        stage.setFullScreenExitHint("");
+        //stage.setFullScreenExitHint("");
 
         //switch between fullscreen and windowed
-        if (stage.isFullScreen())
+        if (stage.isMaximized())
         {
-            stage.setFullScreen(false);
+            stage.setMaximized(false);
+            stage.setHeight(300);
+            stage.setWidth(700);
         }else
         {
-            stage.setFullScreen(true);
+            stage.setMaximized(true);
         }
     }
 

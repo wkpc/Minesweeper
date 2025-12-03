@@ -13,7 +13,8 @@ rules as classic minesweeper. The goal of the game is to clear all the tiles wit
 To be able to run this game, download the "out" folder and unzip it. Make sure to keep all the contents of the folder 
 together in the same directory. The other folders in the repository are not necessary to run the game. This program uses
 the external JavaFX library. This is included in the "out" folder as "javafx-sdk-25.0.1", if you already have JavaFx 
-installed on your computer, you can choose to skip this file.
+installed on your computer, you can choose to skip this file. Note: it is not normally possible to download specific files from 
+GitHub without extra workarounds, so you may have to download the entire project files to get the out folder.
 
 To launch the game, simply launch the "Minesweeper.bat" file, by either double-clicking the file or opening Command 
 Prompt and typing in the file path.

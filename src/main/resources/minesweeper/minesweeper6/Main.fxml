@@ -23,7 +23,7 @@
          <menus>
             <Menu mnemonicParsing="false" text="File">
                <items>
-                  <CheckMenuItem mnemonicParsing="false" onAction="#onMenuFullscreenClicked" text="Fullscreen" />
+                  <CheckMenuItem disable="true" mnemonicParsing="false" onAction="#onMenuFullscreenClicked" text="Fullscreen" visible="false" />
                   <MenuItem mnemonicParsing="false" onAction="#onMenuExitClicked" text="Exit" />
                </items>
             </Menu>
@@ -34,7 +34,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <SplitPane dividerPositions="0.2976588628762542, 0.7023411371237458" prefHeight="365.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
+      <SplitPane fx:id="SplitPane" dividerPositions="0.2976588628762542, 0.7023411371237458" prefHeight="365.0" prefWidth="600.0" VBox.vgrow="ALWAYS">
          <items>
             <VBox alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" styleClass="sidePane" SplitPane.resizableWithParent="false">
                <children>
@@ -48,9 +48,9 @@
                   <Button fx:id="Start" mnemonicParsing="false" onMouseClicked="#onStartClicked" prefHeight="25.0" prefWidth="99.0" text="Start" />
                </children>
             </VBox>
-            <HBox fx:id="CenterPane" alignment="TOP_CENTER" prefHeight="353.0" prefWidth="186.0">
+            <HBox fx:id="CenterPane" alignment="TOP_CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="353.0" prefWidth="186.0">
                <children>
-                  <GridPane id="centerPane" fx:id="MainGrid" alignment="CENTER" gridLinesVisible="true" prefHeight="142.0" prefWidth="132.0">
+                  <GridPane id="centerPane" fx:id="MainGrid" alignment="CENTER" gridLinesVisible="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="142.0" prefWidth="132.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
