@@ -7,7 +7,7 @@ import java.util.Random;
 public class Game
 {
     //dimensions for different difficulties
-    private static final int HARDDIMX = 21;
+    private static final int HARDDIMX = 20;
     private static final int HARDDIMY = 30;
     private static final int NORMALDIM = 16;
     private static final int EASYDIM = 9;
